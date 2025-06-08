@@ -12,6 +12,13 @@ import { apiKey } from '../../environment';
     <div class="stats-container">
       <h1>Player Stats</h1>
       <p>Username: {{ username }}</p>
+      <img [src]="avatar" alt="Avatar" />
+      <img [src]="coverImage" alt="Cover Image" />
+      <p>Level: {{ level }}</p>
+      <p>Elo: {{ elo }}</p>
+      <p>Region: {{ region }}</p>
+      <p>Country: {{ country }}</p>
+      <p>SteamID: {{ steamID }}</p>
       
       <div class="stats-grid">
         <app-statcard 
@@ -54,6 +61,14 @@ import { apiKey } from '../../environment';
 })
 export class StatsComponent implements OnInit {
   username: string = '';
+  avatar: string = '';
+  coverImage: string = '';
+  level: number = 0;
+  elo: number = 0;
+  region: string = '';
+  country: string = '';
+  steamID: string = '';
+
   kd: string = '0.00';
 
   kdSubStats = [
@@ -81,9 +96,37 @@ export class StatsComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.username = params['username'];
       if (this.username) {
+        this.getPlayerData(this.username);
         this.getPlayerStats(this.username);
       }
     });
+  }
+
+  private async getPlayerData(username: string) {
+
+    try {
+      const playerResponse = await fetch(`https://open.faceit.com/data/v4/players?nickname=${username}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!playerResponse.ok) {
+        throw new Error(`Failed to fetch player data: ${playerResponse.status}`);
+      }
+      const playerData = await playerResponse.json();
+
+      const defaultCover = 'https://cdn.statically.io/img/codetheweb.blog/assets/img/posts/css-advanced-background-images/cover.jpg?f=webp&w=720';
+      this.avatar = playerData.avatar || defaultCover;
+      this.coverImage = playerData.cover_image || defaultCover;
+      this.level = playerData.games.cs2.skill_level;
+      this.elo = playerData.games.cs2.faceit_elo;
+      this.region = playerData.games.cs2.region;
+      this.country = playerData.country;
+      this.steamID = playerData.games.cs2.game_player_id;
+    } catch (error) {
+      console.error('Error fetching player data:', error);
+    }
   }
 
   private async getPlayerStats(username: string) {
