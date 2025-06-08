@@ -4,7 +4,7 @@ html, body {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: #1a1a1a;
+  background: linear-gradient(to bottom, #101010, #1a1a1a);
 }
 
 body {

@@ -3,10 +3,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 260px;
-  min-height: 180px;
+  width: 200px;
+  height: 180px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
-  padding: 24px 24px 18px 24px;
+  padding: 0px 24px 18px 24px;
   overflow: hidden;
   border-radius: 12px;
   background: #212121;
@@ -38,7 +38,7 @@
 .main-stat {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #00FF00;
+  color: #fff;
   letter-spacing: 1px;
 }
 
@@ -65,32 +65,9 @@
   min-width: 40px;
 }
 
-.content .btn {
-  color: #e8e8e8;
-  text-decoration: none;
-  padding: 10px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  /*background: #0974f1;*/
-  background: #f50;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
-
 .card:hover {
   /*box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);*/
   box-shadow: 0 0 20px rgba(255, 85, 0, 0.2);
   /*border-color: #0974f1;*/
   border-color: #f50;
-}
-
-.content .btn:hover {
-  outline: 2px solid #e8e8e8;
-  background: transparent;
-  color: #e8e8e8;
-}
-
-.content .btn:active {
-  box-shadow: none;
 }
