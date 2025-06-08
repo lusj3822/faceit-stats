@@ -25,7 +25,6 @@
 .heading {
   font-weight: 700;
   font-size: 16px;
-  color: #aeb8c4;
   margin-bottom: 0.5rem;
 }
 
@@ -39,15 +38,8 @@
 .main-stat {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #d6ac22;
+  color: #00FF00;
   letter-spacing: 1px;
-}
-
-.percent-change {
-  font-size: 1rem;
-  color: #23d160;
-  font-weight: 600;
-  margin-left: 4px;
 }
 
 .sub-stats {

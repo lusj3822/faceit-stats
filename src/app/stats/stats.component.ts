@@ -9,17 +9,27 @@ import { apiKey } from '../../environment';
   standalone: true,
   imports: [CommonModule, StatcardComponent],
   template: `
+    <div class="player-info-card">
+      <div class="cover-container">
+        <img [src]="coverImage" alt="Cover Image" class="cover-image" />
+        <div class="avatar-container">
+          <img [src]="avatar" alt="Avatar" class="avatar-image" />
+        </div>
+      </div>
+      <div class="player-details">
+        <div class="username">{{ username }}</div>
+        <div class="info-pills">
+          <span class="pill">Elo: <span class="pill-value">{{ elo }}</span></span>
+          <span class="pill">Level: <span class="pill-value">{{ level }}</span></span>
+          <span class="pill">Region: <span class="pill-value">{{ region }}</span></span>
+          <span class="pill">Country: <span class="pill-value">{{ country }}</span></span>
+          <span class="pill">SteamID: <span class="pill-value">{{ steamID }}</span></span>
+        </div>
+      </div>
+    </div>
+
     <div class="stats-container">
       <h1>Player Stats</h1>
-      <p>Username: {{ username }}</p>
-      <img [src]="avatar" alt="Avatar" />
-      <img [src]="coverImage" alt="Cover Image" />
-      <p>Level: {{ level }}</p>
-      <p>Elo: {{ elo }}</p>
-      <p>Region: {{ region }}</p>
-      <p>Country: {{ country }}</p>
-      <p>SteamID: {{ steamID }}</p>
-      
       <div class="stats-grid">
         <app-statcard 
           title="K/D Ratio" 
@@ -47,11 +57,73 @@ import { apiKey } from '../../environment';
     </div>
   `,
   styles: [`
+    .player-info-card {
+      max-width: 700px;
+      margin: 2rem auto 3.5rem auto;
+      background: #212121;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      overflow: hidden;
+      position: relative;
+    }
+    .cover-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      background: #232b3a;
+    }
+    .cover-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .avatar-container {
+      position: absolute;
+      left: 32px;
+      bottom: -48px;
+      z-index: 2;
+    }
+    .avatar-image {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 4px solid #f50;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      background: #212121;
+      object-fit: cover;
+    }
+    .player-details {
+      padding: 56px 32px 24px 32px;
+      color: #fff;
+    }
+    .username {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .info-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .pill {
+      background: #303030;
+      color: #e8e8e8;
+      border-radius: 999px;
+      padding: 0.4rem 1.1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+    .pill-value {
+      color: #f50;
+      font-weight: 700;
+    }
     .stats-container {
       padding: 2rem;
       color: white;
     }
-
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
