@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="container">
-      <h1>Faceit Stats</h1>
+      <h1>Faceit Statistics</h1>
+      <p class="text-white">Enter your Faceit username to get your statistics</p>
         <div class="search-box">
           <input
             type="text" 
-            placeholder="Enter Faceit username..." 
+            placeholder="Eg. S1mple" 
             class="search-input"
             [(ngModel)]="username"
             (keyup.enter)="searchPlayer()"
@@ -28,7 +29,7 @@ import { Router } from '@angular/router';
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #1a1a1a;
+      background: linear-gradient(to bottom, #101010, #1a1a1a);
       color: white;
       margin: 0;
       padding: 0;
