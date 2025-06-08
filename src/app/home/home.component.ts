@@ -3,19 +3,21 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { apiKey } from '../../environment';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   template: `
+    <app-navbar></app-navbar>
     <div class="container">
       <h1>Faceit Statistics</h1>
       <p class="text-white">Enter your Faceit username to get your statistics</p>
       <div class="search-box">
         <input
           type="text"
-          placeholder="Eg. S1mple"
+          placeholder="Eg. s1mple"
           class="search-input" 
           [ngClass]="{ 'input-error': errorMessage }"
           [(ngModel)]="username"
@@ -25,8 +27,8 @@ import { apiKey } from '../../environment';
       <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
   `,
-  styles: [`
-    .container {
+  styles: [
+    `.container {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -41,37 +43,11 @@ import { apiKey } from '../../environment';
       top: 0;
       left: 0;
     }
-
-    .search-container {
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      background-color: #2a2a2a;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 500px;
-      height: 50px;
-    }
-
-    h1 {
-      margin-bottom: 1rem;
-      font-size: 2.5rem;
-      color: white;
-    }
-
     .search-box {
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
     }
-
-    .material-symbols-outlined {
-      display: flex;
-      align-items: center;
-    }
-
     .search-input {
       width: 20vw;
       height: 5vh;
@@ -84,16 +60,13 @@ import { apiKey } from '../../environment';
       font-size: 1.5rem;
       transition: border-color 0.2s;
     }
-
     .search-input:focus {
       outline: none;
       border-color: #f50;
     }
-
     .input-error {
       border-color: #c00 !important;
     }
-
     .error-message {
       margin-top: 1rem;
       color: red;
@@ -135,4 +108,4 @@ export class HomeComponent {
       }
     }
   }
-} 
+}

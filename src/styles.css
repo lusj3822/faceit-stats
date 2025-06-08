@@ -5,6 +5,7 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   background: linear-gradient(to bottom, #101010, #1a1a1a);
+  scrollbar-color: #212121 #1a1a1a;
 }
 
 body {

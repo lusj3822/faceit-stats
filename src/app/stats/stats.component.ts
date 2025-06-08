@@ -4,12 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { StatcardComponent } from '../statcard/statcard.component';
 import { apiKey } from '../../environment';
 import { BaseChartDirective } from 'ng2-charts';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-stats',
   standalone: true,
-  imports: [CommonModule, StatcardComponent, BaseChartDirective],
+  imports: [CommonModule, StatcardComponent, BaseChartDirective, NavbarComponent],
   template: `
+    <app-navbar></app-navbar>
     <div class="player-info-card">
       <div class="avatar-container">
           <img [src]="avatar" alt="Avatar" class="avatar-image" />
@@ -17,10 +19,11 @@ import { BaseChartDirective } from 'ng2-charts';
       <div class="username">{{ username }}</div>
       <div class="player-details">
         <p>Elo: {{ elo }}</p>
-        <img src="level10_faceit.png" alt="faceit-level" class="faceit-level"/>
-        <img src="sweden_flag.png" alt="flag" class="flag"/>
+        <p>Level: {{ level }}</p>
+        <p>Country: {{ countryFullName }}</p>
       </div>
     </div>
+    <h1 class="stats-title">{{ hasGameData ? 'Statistics for last 20 games' : 'No match data found (inactive player)' }}</h1>
     <div class="stats-container">
       <div class="stats-grid">
         <app-statcard 
@@ -98,14 +101,29 @@ import { BaseChartDirective } from 'ng2-charts';
       font-size: 2rem;
       font-weight: 700;
     }
+    .stats-title {
+      color: #f50;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-left: 2rem;
+      text-align: center;
+    }
     .stats-container {
       padding: 2rem;
       color: white;
-      margin-left: 25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 270px));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      justify-items: center;
+      width: 100%;
     }
     .kd-chart-container {
       margin-top: 2rem;
@@ -132,9 +150,7 @@ export class StatsComponent implements OnInit {
   avatar: string = '';
   level: number = 0;
   elo: number = 0;
-  region: string = '';
   country: string = '';
-  steamID: string = '';
 
   kd: string = '0.00';
 
@@ -174,6 +190,34 @@ export class StatsComponent implements OnInit {
 
   isBrowser = false;
 
+  countryNames: { [key: string]: string } = {
+    se: 'Sweden',
+    dk: 'Denmark',
+    no: 'Norway',
+    fi: 'Finland',
+    de: 'Germany',
+    fr: 'France',
+    es: 'Spain',
+    it: 'Italy',
+    pl: 'Poland',
+    nl: 'Netherlands',
+    be: 'Belgium',
+    ru: 'Russia',
+    ua: 'Ukraine',
+    cz: 'Czech Republic',
+    sk: 'Slovakia',
+    pt: 'Portugal',
+    ch: 'Switzerland',
+    at: 'Austria'
+  };
+
+  hasGameData: boolean = true;
+
+  get countryFullName(): string {
+    const code = (this.country || '').toLowerCase();
+    return this.countryNames[code] || this.country || '';
+  }
+
   constructor(
     private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -205,13 +249,13 @@ export class StatsComponent implements OnInit {
       const playerData = await playerResponse.json();
 
       const defaultAvatar = 'defaultavatar.jpg';
-
       this.avatar = playerData.avatar || defaultAvatar;
+
+      if (!playerData.games.cs2) return;
+
       this.level = playerData.games.cs2.skill_level;
       this.elo = playerData.games.cs2.faceit_elo;
-      this.region = playerData.games.cs2.region;
       this.country = playerData.country;
-      this.steamID = playerData.games.cs2.game_player_id;
     } catch (error) {
       console.error('Error fetching player data:', error);
     }
@@ -247,9 +291,10 @@ export class StatsComponent implements OnInit {
       const matchData = json.items;
 
       if (!matchData || matchData.length === 0) {
-        console.log('No match data available');
+        this.hasGameData = false;
         return;
       }
+      this.hasGameData = true;
 
       let totalKills = 0;
       let totalDeaths = 0;
