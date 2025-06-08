@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { apiKey } from '../../environment';
 
 @Component({
   selector: 'app-home',
@@ -11,15 +12,17 @@ import { Router } from '@angular/router';
     <div class="container">
       <h1>Faceit Statistics</h1>
       <p class="text-white">Enter your Faceit username to get your statistics</p>
-        <div class="search-box">
-          <input
-            type="text" 
-            placeholder="Eg. S1mple" 
-            class="search-input"
-            [(ngModel)]="username"
-            (keyup.enter)="searchPlayer()"
-          >
-        </div>
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Eg. S1mple"
+          class="search-input" 
+          [ngClass]="{ 'input-error': errorMessage }"
+          [(ngModel)]="username"
+          (keyup.enter)="searchPlayer()"
+        >
+      </div>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
   `,
   styles: [`
@@ -86,21 +89,49 @@ import { Router } from '@angular/router';
       outline: none;
       border-color: #f50;
     }
+
+    .input-error {
+      border-color: #c00 !important;
+    }
+
+    .error-message {
+      margin-top: 1rem;
+      color: red;
+    }
   `]
 })
 export class HomeComponent {
   username: string = '';
+  errorMessage: string = '';
 
   constructor(private router: Router) {}
 
   async searchPlayer() {
+    this.errorMessage = '';
     if (this.username.trim()) {
       try {
+        const response = await fetch(`https://open.faceit.com/data/v4/players?nickname=${this.username}`, {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`
+          }
+        });
+
+        if (!response.ok) {
+          this.errorMessage = 'User not found.';
+          return;
+        }
+
+        const playerData = await response.json();
+        if (!playerData || !playerData.player_id) {
+          this.errorMessage = 'User not found.';
+          return;
+        }
+
         await this.router.navigate(['/stats'], {
           queryParams: { username: this.username }
         });
       } catch (error) {
-        console.error('Error searching player:', error);
+        this.errorMessage = 'User not found.';
       }
     }
   }

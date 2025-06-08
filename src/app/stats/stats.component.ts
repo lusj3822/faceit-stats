@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { StatcardComponent } from '../statcard/statcard.component';
 import { apiKey } from '../../environment';
@@ -48,7 +48,7 @@ import { BaseChartDirective } from 'ng2-charts';
       </div>
     </div>
 
-    <div class="kd-chart-container">
+    <div class="kd-chart-container" *ngIf="isBrowser">
       <h2>K/D Ratio (Last 20 Games)</h2>
       <canvas baseChart
         [datasets]="kdChartData"
@@ -172,9 +172,15 @@ export class StatsComponent implements OnInit {
     }
   };
 
-  constructor(private route: ActivatedRoute) {}
+  isBrowser = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
+    this.isBrowser = isPlatformBrowser(this.platformId);
     this.route.queryParams.subscribe(params => {
       this.username = params['username'];
       if (this.username) {
@@ -254,8 +260,6 @@ export class StatsComponent implements OnInit {
       let totalWins = 0;
       let totalLosses = 0;
 
-      console.log(matchData);
-
       matchData.forEach((match: any) => {
         totalKills += Number(match.stats.Kills);
         totalDeaths += Number(match.stats.Deaths);
@@ -292,14 +296,6 @@ export class StatsComponent implements OnInit {
         { label: 'Headshots:', value: totalHeadshots.toString() },
         { label: 'Total Kills:', value: totalKills.toString() }
       ];
-
-      console.log('Stats updated:', {
-        kd: this.kd,
-        kdSubStats: this.kdSubStats,
-        averageADR: this.averageADR,
-        headshotPercentage: this.headshotPercentage,
-        winRate: this.winRate
-      });
 
       const last20 = matchData.slice(0, 20).reverse();
       this.kdChartData[0].data = last20.map((match: any) => {
