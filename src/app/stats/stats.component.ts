@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { StatcardComponent } from '../statcard/statcard.component';
 import { apiKey } from '../../environment';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-stats',
   standalone: true,
-  imports: [CommonModule, StatcardComponent],
+  imports: [CommonModule, StatcardComponent, BaseChartDirective],
   template: `
     <div class="player-info-card">
       <div class="avatar-container">
@@ -20,7 +21,6 @@ import { apiKey } from '../../environment';
         <img src="sweden_flag.png" alt="flag" class="flag"/>
       </div>
     </div>
-
     <div class="stats-container">
       <div class="stats-grid">
         <app-statcard 
@@ -47,9 +47,19 @@ import { apiKey } from '../../environment';
         </app-statcard>
       </div>
     </div>
+
+    <div class="kd-chart-container">
+      <h2>K/D Ratio (Last 20 Games)</h2>
+      <canvas baseChart
+        [datasets]="kdChartData"
+        [labels]="kdChartLabels"
+        [options]="kdChartOptions"
+        [type]="'line'">
+      </canvas>
+    </div>
   `,
-  styles: [`
-    .player-info-card {
+  styles: [
+    `.player-info-card {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -97,12 +107,29 @@ import { apiKey } from '../../environment';
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 270px));
     }
+    .kd-chart-container {
+      margin-top: 2rem;
+      background: #232323;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      color: #fff;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 2rem;
+    }
+    .kd-chart-container h2 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #f50;
+    }
   `]
 })
 export class StatsComponent implements OnInit {
   username: string = '';
   avatar: string = '';
-  coverImage: string = '';
   level: number = 0;
   elo: number = 0;
   region: string = '';
@@ -130,6 +157,21 @@ export class StatsComponent implements OnInit {
   headshotPercentage: string = '0.00%';
   winRate: string = '0.00%';
 
+  public kdChartData = [
+    { data: [], label: 'K/D Ratio', fill: false, borderColor: '#f50', tension: 0.3 }
+  ];
+  public kdChartLabels: string[] = [];
+  public kdChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Game' } },
+      y: { title: { display: true, text: 'K/D Ratio' }, beginAtZero: true }
+    }
+  };
+
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
@@ -156,9 +198,9 @@ export class StatsComponent implements OnInit {
       }
       const playerData = await playerResponse.json();
 
-      const defaultCover = 'https://cdn.statically.io/img/codetheweb.blog/assets/img/posts/css-advanced-background-images/cover.jpg?f=webp&w=720';
-      this.avatar = playerData.avatar || defaultCover;
-      this.coverImage = playerData.cover_image || defaultCover;
+      const defaultAvatar = 'defaultavatar.jpg';
+
+      this.avatar = playerData.avatar || defaultAvatar;
       this.level = playerData.games.cs2.skill_level;
       this.elo = playerData.games.cs2.faceit_elo;
       this.region = playerData.games.cs2.region;
@@ -257,6 +299,21 @@ export class StatsComponent implements OnInit {
         averageADR: this.averageADR,
         headshotPercentage: this.headshotPercentage,
         winRate: this.winRate
+      });
+
+      const last20 = matchData.slice(0, 20).reverse();
+      this.kdChartData[0].data = last20.map((match: any) => {
+        const kills = Number(match.stats.Kills);
+        const deaths = Number(match.stats.Deaths);
+        return deaths > 0 ? (kills / deaths) : 0;
+      });
+      this.kdChartLabels = last20.map((match: any, idx: number) => {
+        const createdAt = match.stats["Created At"];
+        if (createdAt) {
+          const date = new Date(createdAt);
+          return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`;
+        }
+        return `Game ${idx + 1}`;
       });
 
     } catch (error) {
