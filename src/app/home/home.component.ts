@@ -60,6 +60,10 @@ import { NavbarComponent } from '../navbar/navbar.component';
       font-size: 1.5rem;
       transition: border-color 0.2s;
     }
+    .search-input:hover {
+      outline: none;
+      border-color: #f50;
+    }
     .search-input:focus {
       outline: none;
       border-color: #f50;

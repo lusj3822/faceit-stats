@@ -137,6 +137,10 @@ import { NavbarComponent } from '../navbar/navbar.component';
       margin-right: auto;
       margin-bottom: 2rem;
     }
+    .kd-chart-container:hover {
+      box-shadow: 0 0 20px rgba(255, 85, 0, 0.8);
+      border-color: #f50;
+    }
     .kd-chart-container h2 {
       margin-bottom: 1rem;
       font-size: 1.3rem;
