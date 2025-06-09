@@ -42,7 +42,6 @@ testem.log
 Thumbs.db
 
 .env
-environment.ts
 
 # Playwright
 node_modules/
