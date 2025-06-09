@@ -85,6 +85,7 @@ export class HomeComponent {
 
   async searchPlayer() {
     this.errorMessage = '';
+    console.log(environment.apiKey);
     if (this.username.trim()) {
       try {
         const response = await fetch(`https://open.faceit.com/data/v4/players?nickname=${this.username}`, {
