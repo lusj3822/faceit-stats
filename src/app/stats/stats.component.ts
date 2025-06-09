@@ -2,9 +2,9 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { StatcardComponent } from '../statcard/statcard.component';
-import { apiKey } from '../../environment';
 import { BaseChartDirective } from 'ng2-charts';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-stats',
@@ -243,7 +243,7 @@ export class StatsComponent implements OnInit {
     try {
       const playerResponse = await fetch(`https://open.faceit.com/data/v4/players?nickname=${username}`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${environment.apiKey}`
         }
       });
 
@@ -270,7 +270,7 @@ export class StatsComponent implements OnInit {
     try {
       const playerResponse = await fetch(`https://open.faceit.com/data/v4/players?nickname=${username}`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${environment.apiKey}`
         }
       });
 
@@ -283,7 +283,7 @@ export class StatsComponent implements OnInit {
 
       const matchResponse = await fetch(`https://open.faceit.com/data/v4/players/${playerId}/games/cs2/stats`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${environment.apiKey}`
         }
       });
 

@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "generate-env": "node scripts/generate-env.js",
+    "build": "npm run generate-env && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:faceit-stats": "node dist/faceit-stats/server/server.mjs"
@@ -21,6 +22,7 @@
     "@angular/router": "^20.0.2",
     "@angular/ssr": "^20.0.1",
     "chart.js": "^4.3.0",
+    "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "ng2-charts": "^8.0.0",
     "node": "^22.16.0",

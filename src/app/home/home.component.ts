@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { apiKey } from '../../environment';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -89,7 +89,7 @@ export class HomeComponent {
       try {
         const response = await fetch(`https://open.faceit.com/data/v4/players?nickname=${this.username}`, {
           headers: {
-            'Authorization': `Bearer ${apiKey}`
+            'Authorization': `Bearer ${environment.apiKey}`
           }
         });
 
