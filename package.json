@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "generate-env": "node scripts/generate-env.js",
-    "build": "npm run generate-env && ng build",
+    "build": "npm run generate-env && ng build --prod",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:faceit-stats": "node dist/faceit-stats/server/server.mjs"
